@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import logging
 import re
+from vacuula_server.storage import component
 from typing import Callable, Optional, Tuple, List
 
 # general
@@ -103,11 +104,19 @@ def BrainslugHandler(ROUTES, req) -> None:
     handler, path_params = find_route(ROUTES, req.command, req.path)
     
     if handler:
-        if path_params:
-            handler(req, *path_params)
-        else:
-            handler(req)
+        try:
+            for value in path_params:
+                component(value)
+            return _dispatch(handler, req, path_params)
+        except ValueError:
+            req.send_bad_request("Invalid resource path or data")
     else:
         logger.error("No handler for %s %s", req.command, req.path)
         req.send_not_found()
 
+
+def _dispatch(handler, req, path_params):
+    if path_params:
+        handler(req, *path_params)
+    else:
+        handler(req)
