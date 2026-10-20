@@ -1,10 +1,8 @@
 # Local network deployment and storage safety
 
-Vacuula's management API and robot enrollment are currently unauthenticated.
-Keep this service on trusted local networks. This hardening change does not add
-accounts, API tokens, signature verification, or a pairing flow, and does not
-establish that a particular deployment is inaccessible from the Internet.
-Native apps and the web app keep their existing API and SSE contracts.
+This change contains robot uploads and map files within their storage directories
+and reduces the privileges used by the Docker runtime. Native apps and the web
+app keep their existing API and SSE contracts.
 
 Robot-provided storage identifiers must be single path components containing
 ASCII letters, digits, underscores, hyphens, and dots (maximum 128 characters,
@@ -40,13 +38,7 @@ privileges too. Use a separately authorized root maintenance container for
 volume ownership migration. A rollback can use the previous root-running image
 with the migrated volume; restoring an older backup discards newer data.
 
-Host networking is retained for robot discovery. It shares the host's network
-namespace and does not create a firewall around the service. Restrict host INPUT
-traffic to the intended local interfaces/subnets; ensure router forwarding,
-IPv6 policies, VPNs, and tunnels match that intent. Do not expose management or
-robot listeners to the public Internet. An authenticated reverse proxy alone
-does not secure alternate listeners that use the same HTTP router. LAN-only
-operation reduces exposure but is not application authentication.
+Host networking is retained for robot discovery and legacy protocol compatibility.
 
 Run the storage tests with Python 3.14 and the server dependencies installed:
 
