@@ -137,3 +137,6 @@ We have currently only tested and verified on `ARM 64-bit` and `x86 64-bit`. How
 See [the deployment security notes](docs/security.md) before upgrading an
 existing Docker data volume. They describe the storage protections, reduced
 runtime privileges, and volume ownership migration.
+
+Before changing identifier validation or storage naming, read the
+[Gen3/Gen4 identifier guide](server/docs/identifiers.md).

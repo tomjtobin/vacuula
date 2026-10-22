@@ -4,6 +4,9 @@ This change contains robot uploads and map files within their storage directorie
 and reduces the privileges used by the Docker runtime. Native apps and the web
 app keep their existing API and SSE contracts.
 
+See the [Gen3/Gen4 identifier guide](../server/docs/identifiers.md) for example
+formats, URL encoding rules, evidence sources, and regression-test expectations.
+
 Robot-provided storage identifiers must be single path components containing
 ASCII letters, digits, underscores, hyphens, dots, and colons (maximum 128 characters,
 starting with a letter, digit, underscore, or hyphen). Storage rejects symlinks

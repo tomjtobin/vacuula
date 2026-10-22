@@ -1,4 +1,7 @@
-"""Keep robot-controlled names inside application-owned storage."""
+"""Keep robot-controlled names inside application-owned storage.
+
+See server/docs/identifiers.md for generation-specific compatibility examples.
+"""
 from __future__ import annotations
 
 import os
