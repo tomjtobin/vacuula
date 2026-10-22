@@ -17,8 +17,9 @@ and 64 MiB expanded contents. Links, devices, duplicate files, and directory
 traversal are rejected before any member is published. These limits do not
 provide general traffic or storage quotas.
 
-The Docker entrypoint briefly starts as root solely to drop privileges with
-`setpriv`. Migrations and Python run as UID/GID **10001:10001**, with only
+The Docker entrypoint briefly starts as root to prepare existing data ownership
+automatically and then drop privileges with `setpriv`. Database migrations and
+the server run as UID/GID **10001:10001**, with only
 `CAP_NET_BIND_SERVICE` retained to support legacy low ports with host networking.
 The bounding set also discards the startup capabilities. The Compose example
 enables no-new-privileges, a read-only image filesystem, a bounded temporary
@@ -27,19 +28,19 @@ limits for your maps/hardware. The application data volume remains writable.
 Docker resource limits also require matching host kernel/cgroup support; inspect
 `docker info` rather than assuming a requested limit is enforced.
 
-For a fresh named volume, Docker copies the image directory ownership. For an
-existing installation, stop the service and back up the data volume, preserving
-ownership and permissions, before updating. As root in a maintenance container,
-change ownership of the data directory and its contents to `10001:10001` (do not
-follow symlinks or change ownership of anything outside this volume). The
-entrypoint deliberately does not recursively change permissions at every boot.
-Custom bind mounts must also permit UID 10001 to access the required files.
-TLS keys should remain mode 0600. Mount only trusted data volumes.
+Standard existing Docker/HA volumes are prepared on startup without manual
+ownership commands. The walk changes ownership only where required, preserves
+data and ordinary modes, does not follow symlinks, and can recover after partial
+preparation. Startup CHOWN/DAC_OVERRIDE and identity-switching capabilities are
+discarded before application imports; only NET_BIND_SERVICE remains. HA options
+are copied privately rather than changing ownership of Supervisor's `/data`.
+See [upgrade requirements](upgrades.md) for the contract, unsupported custom
+configurations, failure behavior, and schema/rollback considerations. Keep normal
+backups and keep the data volume writable; TLS keys remain mode 0600.
 
-When invoking maintenance commands, remember that the image entrypoint drops
-privileges too. Use a separately authorized root maintenance container for
-volume ownership migration. A rollback can use the previous root-running image
-with the migrated volume; restoring an older backup discards newer data.
+The complete image and automatic upgrade behavior have a dedicated container
+test suite. See [testing](testing.md) for commands and the distinction between
+HA-shaped Docker tests and actual Supervisor/protection-mode/ingress validation.
 
 Host networking is retained for robot discovery and legacy protocol compatibility.
 

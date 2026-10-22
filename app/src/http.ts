@@ -9,6 +9,9 @@ declare module 'axios' {
   }
 }
 
+const ha_ingress = window.location.pathname.match(/^\/api\/hassio_ingress\/[^/]+/)
+export const BASE_PATH = ha_ingress ? ha_ingress[0] : ""
+
 /** GET /api/server */
 export interface ServerInfo {
   version: string
@@ -20,11 +23,8 @@ export interface ServerInfo {
   utc_offset_minutes: number
 }
 
-// Store for loading state callback - will be set by AppContext
-// let loadingStateCallback: ((state: { isLoading: boolean; message?: string }) => void) | null = null;
-
 const instance = axios.create({
-  baseURL: `${location.origin}/api`, 
+  baseURL: `${BASE_PATH}/api`, 
 });
 
 export type LoadingState = { isLoading: boolean; message?: string };

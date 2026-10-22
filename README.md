@@ -77,6 +77,10 @@ We provide you with a couple of ways to set up the server
 2. Download [`docker-compose.yaml`](https://github.com/vacuula/vacuula/releases/latest/download/docker-compose.yaml) or run `wget https://github.com/vacuula/vacuula/releases/latest/download/docker-compose.yaml` to download and save the file
 3. Run `docker compose up -d`
 
+Existing standard Docker and Home Assistant installations are prepared
+automatically on startup when an updated image is supplied; no manual ownership
+repair is required. See [upgrade behavior and compatibility](docs/upgrades.md).
+
 - The server is configured by [environment variables](#configure-server)
 - To see logs do `docker compose logs vacuula`
 - To stop vacuula `docker compose down`
@@ -136,7 +140,12 @@ We have currently only tested and verified on `ARM 64-bit` and `x86 64-bit`. How
 
 See [the deployment security notes](docs/security.md) before upgrading an
 existing Docker data volume. They describe the storage protections, reduced
-runtime privileges, and volume ownership migration.
+runtime privileges, and automatic volume preparation.
 
 Before changing identifier validation or storage naming, read the
 [Gen3/Gen4 identifier guide](server/docs/identifiers.md).
+
+Contributors: read [CONTRIBUTING.md](CONTRIBUTING.md), the
+[upgrade requirements](docs/upgrades.md), and the [test matrix](docs/testing.md).
+The PR template asks for the problem, detection evidence, required change,
+implementation, validation/upgrade impact, and whether AI assistance was used.

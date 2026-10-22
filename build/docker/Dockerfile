@@ -62,6 +62,7 @@ COPY server/migrations ./migrations
 COPY --from=frontend /app/dist ./web
 
 COPY --chmod=755 build/docker/entrypoint.sh /usr/local/bin/vacuula-entrypoint
+COPY build/docker/prepare_data.py /usr/local/lib/vacuula/prepare_data.py
 ENTRYPOINT ["vacuula-entrypoint"]
 
-CMD ["sh", "-c", "alembic upgrade head && vacuula-server"]
+CMD ["sh", "-c", "alembic upgrade head && exec vacuula-server"]
