@@ -5,7 +5,7 @@ and reduces the privileges used by the Docker runtime. Native apps and the web
 app keep their existing API and SSE contracts.
 
 Robot-provided storage identifiers must be single path components containing
-ASCII letters, digits, underscores, hyphens, and dots (maximum 128 characters,
+ASCII letters, digits, underscores, hyphens, dots, and colons (maximum 128 characters,
 starting with a letter, digit, underscore, or hyphen). Storage rejects symlinks
 and replaces output files atomically. Gen3 log uploads are saved as `upload.bin`;
 the supplied filename no longer determines the destination. Gen3 map archives
@@ -50,3 +50,10 @@ Tests cover traversal, absolute paths, existing symlinks, atomic replacement,
 archive member types/limits, the Gen3 upload-init response, Gen4 map writes, and
 HTTP route validation. Gen3 hardware compatibility needs a real robot test;
 fixtures alone cannot establish it.
+
+Synthetic Gen3 fixtures also exercise timestamp-shaped IDs such as
+`2026-10-20T13:49:10Z`, fractional seconds, and midnight. They use an isolated
+HTTP server and SQLite database to cover upload initiation, multipart map/log
+uploads, finalization, PNG parsing, persisted history, and map reads with both
+literal and URL-encoded colons. Traversal and symlink cases remain rejected.
+These generated fixtures are protocol regression tests, not firmware captures.

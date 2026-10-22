@@ -8,7 +8,7 @@ import tempfile
 
 
 def component(value: str) -> str:
-    if not isinstance(value, str) or not re.fullmatch(r"[A-Za-z0-9_-][A-Za-z0-9_.-]{0,127}", value):
+    if not isinstance(value, str) or not re.fullmatch(r"[A-Za-z0-9_-][A-Za-z0-9_.:-]{0,127}", value):
         raise ValueError("Invalid storage identifier")
     return value
 

@@ -5,6 +5,7 @@ import logging
 import re
 from vacuula_server.storage import component
 from typing import Callable, Optional, Tuple, List
+from urllib.parse import unquote
 
 # general
 from .app import get_robots, get_maps, get_map, get_run, post_map, post_robot, get_runs, connect_robot, post_robot_command, get_server_info
@@ -80,8 +81,9 @@ def find_route(
     Returns:
         (handler, [path_params]) or (None, []) if not found
     """
-    # Strip query string from path
-    path = path.split('?')[0]
+    # Decode URL path identifiers once before matching and validating them.
+    # Gen3 timestamps may contain literal ':' or URL-encoded '%3A'.
+    path = unquote(path.split('?', 1)[0])
     
     for route_method, pattern, handler in routes:
         if route_method != method:
