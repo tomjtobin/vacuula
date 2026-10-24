@@ -102,16 +102,17 @@ port, and record any baseline port configuration.
 
 ### Coverage status
 
-This is the required procedure, not a claim that every row has passed. At the
-time this procedure was added:
+The ARM64 snapshot runs are recorded in [the validation report](upgrade-validation.md).
+A data-preserving update pass is separate from clean shutdown and physical robot
+compatibility; the report records failures and remaining gaps.
 
 | Coverage | Evidence/status |
 | --- | --- |
-| Automated Docker upgrade regressions | 9 tests passed against the full ARM64 candidate image, using synthetic legacy-schema/root-owned fixtures; these do not establish a previous-release snapshot/restore cycle through Compose. |
-| Previous-release Docker/Compose snapshot cycle | Pending. |
-| Actual HA environment | HAOS/Supervisor setup, baseline stable add-on startup/API, and VM restart checked; candidate Supervisor upgrade, snapshot/restore cycle and beta ingress pending. |
-| LXC/standalone snapshot cycle | Pending. |
-| Physical robots | Earlier Gen4/iOS checks used an earlier candidate. Latest-candidate Gen4 checks and real Gen3 hardware validation remain outstanding. |
+| Automated Docker upgrade regressions | 9 tests passed against the full ARM64 candidate image, using synthetic legacy-schema/root-owned fixtures. |
+| Previous-release Docker/Compose snapshot cycle | Data preservation, restore/repeat and restarts passed twice with the existing Compose configuration and twice with the candidate configuration. Candidate clean shutdown fails. |
+| HA stable and beta | Each passed two Supervisor update/native-backup-restore cycles while supported and healthy; data, options, privileges and restarts checked. Beta ingress HTML/assets/APIs/SSE passed. Local test mirrors validate Supervisor lifecycle, not official release discovery. Candidate clean shutdown fails. |
+| Standalone systemd | Two Debian 13 VM snapshot/upgrade cycles, restarts, installer backups and custom environment preservation passed. Actual LXC restrictions remain untested. |
+| Physical robots | Earlier Gen4/iOS checks used an earlier candidate. Latest-candidate Gen4 checks and real Gen3 hardware validation remain outstanding. The old Gen3 default port is not preserved automatically. |
 
 Report architecture separately: ARM64 results do not establish AMD64 behavior.
 Synthetic Gen3/Gen4 identifiers exercise protocol/storage handling, but this
