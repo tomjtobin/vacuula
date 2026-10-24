@@ -2,9 +2,11 @@
 
 ## Contract for contributors
 
-Standard Docker and Home Assistant add-on upgrades must start successfully with
-their existing writable data volume, without manual ownership commands or other
-repair steps. This includes unattended updates. This is a requirement for changes
+Standard Docker, Home Assistant add-on, and LXC/standalone installations must
+upgrade successfully with their existing writable data, without manual ownership
+commands or other repair steps. This includes unattended image updates where
+supported. The standalone procedure still requires rerunning its installer; it
+does not fetch and apply releases automatically. This is a requirement for changes
 to startup, permissions, or data storage, not a claim that every release has been
 validated on every platform.
 
@@ -22,6 +24,11 @@ Image delivery and data migration are different operations. Docker's `latest`
 tag and `restart: unless-stopped` do not fetch new images by themselves. A user,
 Home Assistant Supervisor, or an update service supplies the new image; the
 image's startup must then prepare existing data automatically.
+
+The [snapshot-and-upgrade procedure](testing.md#snapshot-and-upgrade-procedure)
+checks each deployment before and after its normal update, then restores the
+baseline and repeats the upgrade. Docker/HA use the image entrypoint; standalone
+uses its installer and systemd service. Passing one does not establish the others.
 
 ## What this change does
 
