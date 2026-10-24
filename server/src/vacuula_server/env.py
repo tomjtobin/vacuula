@@ -60,6 +60,8 @@ def _get_str_env(name: str, default: str) -> str:
     return str(value)
 
 GEN3_PORT: int = _get_int_env("GEN3_PORT", 335)
+# Set to 0 to disable the pre-1.1 Gen3 HTTPS endpoint.
+GEN3_LEGACY_PORT: int = _get_int_env("GEN3_LEGACY_PORT", 443)
 GEN4_PORT: int = _get_int_env("GEN4_PORT", 3443)
 VACUULA_PORT: int = _get_int_env("VACUULA_PORT", 80)
 GEN3_ENABLED: bool = _get_bool_env("GEN3_ENABLED", True)
@@ -77,6 +79,13 @@ if not (100 <= GEN3_PORT <= 999):
     raise ValueError(
         "GEN3_PORT must be in port range (100-999). "
         f"Got GEN3_PORT={GEN3_PORT}"
+    )
+if GEN3_LEGACY_PORT != 0 and not (100 <= GEN3_LEGACY_PORT <= 999):
+    raise ValueError("GEN3_LEGACY_PORT must be 0 (disabled) or in port range (100-999)")
+if GEN3_ENABLED and GEN3_LEGACY_PORT in (GEN4_PORT, VACUULA_PORT):
+    raise ValueError(
+        "GEN3_LEGACY_PORT conflicts with GEN4_PORT or VACUULA_PORT; "
+        "choose another port or set GEN3_LEGACY_PORT=0 to disable compatibility"
     )
 if not (1 <= GEN4_PORT <= 65535 and 1 <= VACUULA_PORT <= 65535):
     raise ValueError(

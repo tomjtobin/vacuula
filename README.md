@@ -112,6 +112,7 @@ We have made an easy to use installer to set your robot up!
 | Port | Option       | Used by                                                    |
 |------|--------------|------------------------------------------------------------|
 | 80   | VACUULA_PORT | Server, Webapp, Installer. (HTTP, reverse proxy for HTTPS) |
+| 443  | GEN3_LEGACY_PORT | Legacy Gen3 HTTPS endpoint; 0 disables compatibility |
 | 335  | GEN3_PORT    | Gen3 robots, D3-D7                                         |
 | 3443 | GEN4_PORT    | Gen4 robots, D8-D10                                        |
 
@@ -121,6 +122,7 @@ We have made an easy to use installer to set your robot up!
 | Option       | Default | Info                                                                                                                |
 |--------------|---------|---------------------------------------------------------------------------------------------------------------------|
 | GEN3_PORT    | 335     | Default port the Gen3 robots will connect to the server on                                                          |
+| GEN3_LEGACY_PORT | 443 | Additional Gen3 HTTPS port for existing robots; set to 0 to disable |
 | GEN4_PORT    | 3443    | Default port the Gen4 robots will connect to the server on                                                          |
 | VACUULA_PORT | 80      | Default port that you can reach the webapp/api on                                                                   |
 | GEN3_ENABLED | True    | If server should support for Gen3 robots                                                                            |
@@ -132,3 +134,5 @@ We have made an easy to use installer to set your robot up!
 ### Platform architecture
 We have currently only tested and verified on `ARM 64-bit` and `x86 64-bit`. However, we want the server to support at least `ARM 32-bit` and possibly `x86 32-bit` as well. We are looking into what we can do to make sure these platforms are also supported. The main reason behind wanting to support them is that the server can run on older SBCs. 
 
+
+See [Gen3 port compatibility and process shutdown](docs/upgrade-compatibility.md) for upgrade behavior, port conflicts, and regression checks.

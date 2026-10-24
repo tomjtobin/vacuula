@@ -23,6 +23,7 @@ map:
 
 options:
   GEN3_PORT: 335
+  GEN3_LEGACY_PORT: 443
   GEN4_PORT: 3443
   VACUULA_PORT: 80
   GEN3_ENABLED: true
@@ -31,6 +32,7 @@ options:
 
 schema:
   GEN3_PORT: int
+  GEN3_LEGACY_PORT: int(0,999)
   GEN4_PORT: int
   VACUULA_PORT: int
   GEN3_ENABLED: bool

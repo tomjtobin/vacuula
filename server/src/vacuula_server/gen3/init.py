@@ -1,21 +1,39 @@
 from __future__ import annotations
+
 import logging
-from vacuula_server.env import GEN3_PORT, HOST_IP
+import threading
+
+from vacuula_server.env import GEN3_LEGACY_PORT, GEN3_PORT, HOST_IP
 from vacuula_server.handlers.router import RouterHandler
 from vacuula_server.logger import LoggingThreadingHTTPServer
 from vacuula_server.tls import create_ssl_context
-import threading
-import threading
 
 logger = logging.getLogger(__name__)
 
+
 def start():
-    # HTTPS server on gen3 port
+    """Bind every required endpoint before starting any request threads."""
     context = create_ssl_context()
-    https_server_1 = LoggingThreadingHTTPServer((HOST_IP, GEN3_PORT), RouterHandler)
-    https_server_1.socket = context.wrap_socket(https_server_1.socket, server_side=True)
-    https_1_thread = threading.Thread(target=https_server_1.serve_forever, daemon=True)
-    https_1_thread.start()
-    logger.info("Gen3 listening on https://%s:%d", HOST_IP, GEN3_PORT)
+    ports = list(dict.fromkeys(port for port in (GEN3_PORT, GEN3_LEGACY_PORT) if port))
+    servers = []
+    try:
+        for port in ports:
+            try:
+                server = LoggingThreadingHTTPServer((HOST_IP, port), RouterHandler)
+            except OSError as error:
+                raise OSError(
+                    f"Cannot bind required Gen3 HTTPS listener {HOST_IP}:{port}. "
+                    "Check port ownership and GEN3_PORT/GEN3_LEGACY_PORT; "
+                    "GEN3_LEGACY_PORT=0 disables legacy compatibility."
+                ) from error
+            servers.append(server)
+            server.socket = context.wrap_socket(server.socket, server_side=True)
+    except BaseException:
+        for server in servers:
+            server.server_close()
+        raise
 
-
+    for server in servers:
+        threading.Thread(target=server.serve_forever, daemon=True).start()
+        logger.info("Gen3 listening on https://%s:%d", HOST_IP, server.server_port)
+    return servers

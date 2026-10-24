@@ -15,5 +15,4 @@ def start():
     http_thread.start()
 
     logger.info("Vacuula Server listening on http://%s:%d", HOST_IP, VACUULA_PORT)
-
-
+    return http_server
